@@ -38,29 +38,16 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects_URG,
     result_save_rootdir = args_dict.result_save_rootdir
     classification_task = args_dict.classification_task
     
-    if window_size == 10:
-        num_chunk_this_window_size = 2224
-    elif window_size == 25:
-        num_chunk_this_window_size = 2144
-    elif window_size == 50:
-        num_chunk_this_window_size = 2016
-    elif window_size == 100:
-        num_chunk_this_window_size = 1744
-    elif window_size == 150:
-        num_chunk_this_window_size = 1488
-    elif window_size == 200:
-        num_chunk_this_window_size = 1216
-    else:
-        raise NameError('not supported window size')
+    num_chunk_this_window_size = 1488
+
         
-        
-    if classification_task == 'four_class':
-        data_loading_function = brain_data.read_subject_csv
-        confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
-        
-    elif classification_task == 'binary':
+    if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
+        
+#     elif classification_task == 'four_class':
+#         data_loading_function = brain_data.read_subject_csv
+#         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
         
     else:
         raise NameError('not supported classification type')
@@ -191,8 +178,6 @@ if __name__=='__main__':
     result_save_rootdir = args.result_save_rootdir
     classification_task = args.classification_task
     setting = args.setting
-    
-    
     
     
     if setting == 'seed1':

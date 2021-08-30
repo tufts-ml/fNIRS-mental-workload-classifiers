@@ -24,10 +24,6 @@ parser.add_argument('--window_size', default=200, type=int, help='window size')
 parser.add_argument('--result_save_rootdir', default='./experiments', help="Directory containing the dataset")
 parser.add_argument('--classification_task', default='four_class', help='binary or four-class classification')
 parser.add_argument('--restore_file', default='None', help="xxx.statedict")
-# #fixed hyper for 40sec binary classification tasl
-# parser.add_argument('--cv_train_batch_size', default=243, type=int, help="cross validation train batch size")
-# parser.add_argument('--cv_val_batch_size', default=61, type=int, help="cross validation val batch size")
-# parser.add_argument('--test_batch_size', default=304, type=int, help="test batch size")
 parser.add_argument('--n_epoch', default=100, type=int, help="number of epoch")
 parser.add_argument('--setting', default='64vs4_TestBucket1', help='which predefined train val test split scenario')
 parser.add_argument('--adapt_on', default='train_100', help="what portion of the test subject' train set is used for adaptation")
@@ -47,42 +43,20 @@ def train_classifier(args_dict, test_subjects):
     classification_task = args_dict.classification_task
     restore_file = args_dict.restore_file
     adapt_on = args_dict.adapt_on
-#     cv_train_batch_size = args_dict.cv_train_batch_size 
-#     cv_val_batch_size = args_dict.cv_val_batch_size
-#     test_batch_size = args_dict.test_batch_size 
     n_epoch = args_dict.n_epoch
     
-    
-    if window_size == 10:
-        model_to_use = models.EEGNet10
-        num_chunk_this_window_size = 2224
-    elif window_size == 25:
-        model_to_use = models.EEGNet25
-        num_chunk_this_window_size = 2144
-    elif window_size == 50:
-        model_to_use = models.EEGNet50
-        num_chunk_this_window_size = 2016
-    elif window_size == 100:
-        model_to_use = models.EEGNet100
-        num_chunk_this_window_size = 1744
-    elif window_size == 150:
-        model_to_use = models.EEGNet150
-        num_chunk_this_window_size = 1488
-    elif window_size == 200:
-        model_to_use = models.EEGNet
-        num_chunk_this_window_size = 1216
-    else:
-        raise NameError('not supported window size')
-       
-
-    if classification_task == 'four_class':
-        data_loading_function = brain_data.read_subject_csv
-        confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
+    model_to_use = models.EEGNet150
+    num_chunk_this_window_size = 1488
         
-    elif classification_task == 'binary':
+
+    if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
         
+#     elif classification_task == 'four_class':
+#         data_loading_function = brain_data.read_subject_csv
+#         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
+    
     else:
         raise NameError('not supported classification type')
         
@@ -121,9 +95,9 @@ def train_classifier(args_dict, test_subjects):
         if adapt_on == 'train_100':
             print('adapt on data size: {}'.format(len(sub_train_feature_array)))
 
-        elif adapt_on == 'train_50':
-            sub_train_feature_array = sub_train_feature_array[-int(0.5*half_sub_data_len):]
-            print('adapt on data size: {}'.format(len(sub_train_feature_array)))
+#         elif adapt_on == 'train_50':
+#             sub_train_feature_array = sub_train_feature_array[-int(0.5*half_sub_data_len):]
+#             print('adapt on data size: {}'.format(len(sub_train_feature_array)))
                                                     
         else:
             raise NameError('not on the predefined gride')
@@ -139,20 +113,12 @@ def train_classifier(args_dict, test_subjects):
             
         #cross validation:
 #         lrs = [0.001, 0.01, 0.1, 1.0, 10.0]
-#         dropouts = [0.25, 0.5, 0.75]
         lrs = [0.001, 0.003, 0.01, 0.03, 0.1]
         dropouts = [0.25, 0.5, 0.75]
 
         for lr in lrs:
             for dropout in dropouts:
                 experiment_name = 'lr{}_dropout{}'.format(lr, dropout)#experiment name: used for indicating hyper setting
-
-                #Mar21: Control: Do not rerun already finished experiment:
-                #(if the result_analysis/performance.txt already exist, meaning this experiment has already finished previously)
-                AlreadyFinished = os.path.exists(os.path.join(result_save_rootdir, test_subject, experiment_name, 'result_analysis', 'performance.txt'))
-                if AlreadyFinished:
-                    print('{}, lr:{} dropout:{} already finished, Do Not Rerun, continue to next setting'.format(test_subject, lr, dropout), flush = True)
-                    continue
 
                 #derived arg
                 result_save_subjectdir = os.path.join(result_save_rootdir, test_subject, experiment_name)
@@ -260,10 +226,6 @@ if __name__=='__main__':
     classification_task = args.classification_task
     restore_file = args.restore_file
     adapt_on = args.adapt_on
-    
-#     cv_train_batch_size = args.cv_train_batch_size
-#     cv_val_batch_size = args.cv_val_batch_size
-#     test_batch_size = args.test_batch_size
     n_epoch = args.n_epoch
     setting = args.setting
 
@@ -432,9 +394,6 @@ if __name__=='__main__':
     print('n_epoch: {} type: {}'.format(n_epoch, type(n_epoch)))
     print('setting: {} type: {}'.format(setting, type(setting)))
     
-   
-       
-    
     args_dict = edict() 
     
     args_dict.gpu_idx = gpu_idx
@@ -443,9 +402,6 @@ if __name__=='__main__':
     args_dict.result_save_rootdir = result_save_rootdir
     args_dict.classification_task = classification_task
     args_dict.restore_file = restore_file
-#     args_dict.cv_train_batch_size = cv_train_batch_size
-#     args_dict.cv_val_batch_size = cv_val_batch_size
-#     args_dict.test_batch_size = test_batch_size
     args_dict.n_epoch = n_epoch
     args_dict.adapt_on = adapt_on
 

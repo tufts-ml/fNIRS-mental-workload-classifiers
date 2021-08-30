@@ -53,16 +53,17 @@ def train_classifier(args_dict):
         raise NameError('not supported window size')
         
         
-    if classification_task == 'four_class':
-        data_loading_function = brain_data.read_subject_csv
-        data_loading_function_testset = brain_data.read_subject_csv_SelectWindowSize
-        confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
+   
         
-    elif classification_task == 'binary':
+    if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         data_loading_function_testset = brain_data.read_subject_csv_binary_SelectWindowSize
         confusion_matrix_figure_labels = ['0back', '2back']
-        
+    
+#     elif classification_task == 'four_class':
+#         data_loading_function = brain_data.read_subject_csv
+#         data_loading_function_testset = brain_data.read_subject_csv_SelectWindowSize
+#         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
     else:
         raise NameError('not supported classification type')
         
@@ -76,7 +77,6 @@ def train_classifier(args_dict):
     sub_data_len = len(sub_label_array)
     #use the 1st half as train
     half_sub_data_len = int(sub_data_len/2)
-    print('half_sub_data_len: {}'.format(half_sub_data_len), flush=True)
 
     sub_train_feature_array = sub_feature_array[:half_sub_data_len]
     sub_train_label_array = sub_label_array[:half_sub_data_len]
@@ -108,48 +108,36 @@ def train_classifier(args_dict):
             if window_size == 200:
                 total_number_train_chunks = 304
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:228]
-#                 val_index = total_index[244:]
                 train_index = total_index[:152]
                 val_index = total_index[152:]
         
             elif window_size == 150:
                 total_number_train_chunks = 368
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:276]
-#                 val_index = total_index[295:]
                 train_index = total_index[:184]
                 val_index = total_index[184:]
         
             elif window_size == 100:
                 total_number_train_chunks = 436
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:327]
-#                 val_index = total_index[349:]
                 train_index = total_index[:218]
                 val_index = total_index[218:]
                 
             elif window_size == 50:
                 total_number_train_chunks = 504
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:388]
-#                 val_index = total_index[404:]
                 train_index = total_index[:252]
                 val_index = total_index[252:]
                 
             elif window_size == 25:
                 total_number_train_chunks = 536
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:422]
-#                 val_index = total_index[429:]
                 train_index = total_index[:268]
                 val_index = total_index[268:]
         
             elif window_size == 10:
                 total_number_train_chunks = 556
                 total_index = np.arange(total_number_train_chunks)
-#                 train_index = total_index[:443]
-#                 val_index = total_index[445:]
                 train_index = total_index[:278]
                 val_index = total_index[278:]
         

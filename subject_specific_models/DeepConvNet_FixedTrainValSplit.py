@@ -15,8 +15,6 @@ import models
 import brain_data
 from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit, write_program_time
 
-from sklearn.model_selection import KFold
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', default=0, type=int, help="random seed")
 parser.add_argument('--gpu_idx', default=0, type=int, help="gpu idx")
@@ -26,11 +24,6 @@ parser.add_argument('--result_save_rootdir', default='./experiments', help="Dire
 parser.add_argument('--SubjectId_of_interest', default='1', help="training personal model for which subject")
 parser.add_argument('--classification_task', default='four_class', help='binary or four-class classification')
 parser.add_argument('--restore_file', default='None', help="xxx.statedict")
-
-# #fixed hyper for 40sec binary classification tasl
-# parser.add_argument('--cv_train_batch_size', default=243, type=int, help="cross validation train batch size")
-# parser.add_argument('--cv_val_batch_size', default=61, type=int, help="cross validation val batch size")
-# parser.add_argument('--test_batch_size', default=304, type=int, help="test batch size")
 parser.add_argument('--n_epoch', default=100, type=int, help="number of epoch")
 
 
@@ -46,10 +39,6 @@ def train_classifier(args_dict):
     SubjectId_of_interest = args_dict.SubjectId_of_interest
     classification_task = args_dict.classification_task
     restore_file = args_dict.restore_file
-    
-#     cv_train_batch_size = args_dict.cv_train_batch_size 
-#     cv_val_batch_size = args_dict.cv_val_batch_size
-#     test_batch_size = args_dict.test_batch_size 
     n_epoch = args_dict.n_epoch
     
 
@@ -57,35 +46,17 @@ def train_classifier(args_dict):
     #load this subject's data
     sub_file = 'sub_{}.csv'.format(SubjectId_of_interest)
     
-    if window_size == 10:
-        model_to_use = models.DeepConvNet10
-        num_chunk_this_window_size = 2224
-    elif window_size == 25:
-        model_to_use = models.DeepConvNet25
-        num_chunk_this_window_size = 2144
-    elif window_size == 50:
-        model_to_use = models.DeepConvNet50
-        num_chunk_this_window_size = 2016
-    elif window_size == 100:
-        model_to_use = models.DeepConvNet100
-        num_chunk_this_window_size = 1744
-    elif window_size == 150:
-        model_to_use = models.DeepConvNet150
-        num_chunk_this_window_size = 1488
-    elif window_size == 200:
-        model_to_use = models.DeepConvNet
-        num_chunk_this_window_size = 1216
-    else:
-        raise NameError('not supported window size')
-       
-
-    if classification_task == 'four_class':
-        data_loading_function = brain_data.read_subject_csv
-        confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
-        
-    elif classification_task == 'binary':
+    model_to_use = models.DeepConvNet150
+    num_chunk_this_window_size = 1488
+    
+    
+    if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
+        
+#     elif classification_task == 'four_class':
+#         data_loading_function = brain_data.read_subject_csv
+#         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
         
     else:
         raise NameError('not supported classification type')
@@ -97,7 +68,6 @@ def train_classifier(args_dict):
     sub_data_len = len(sub_label_array)
     #use 1st half as train, 2nd half as test
     half_sub_data_len = int(sub_data_len/2)
-    print('half_sub_data_len: {}'.format(half_sub_data_len), flush=True)
     
     sub_train_feature_array = sub_feature_array[:half_sub_data_len]
     sub_train_label_array = sub_label_array[:half_sub_data_len]
@@ -117,7 +87,6 @@ def train_classifier(args_dict):
     if cuda:
         print('Detected GPUs', flush = True)
         device = torch.device('cuda')
-#         device = torch.device('cuda:{}'.format(gpu_idx))
     else:
         print('DID NOT detect GPUs', flush = True)
         device = torch.device('cpu')
@@ -132,13 +101,6 @@ def train_classifier(args_dict):
     for lr in lrs:
         for dropout in dropouts:
             experiment_name = 'lr{}_dropout{}'.format(lr, dropout)#experiment name: used for indicating hyper setting
-
-            #Mar21: Control: Do not rerun already finished experiment:
-            #(if the result_analysis/performance.txt already exist, meaning this experiment has already finished previously)
-            AlreadyFinished = os.path.exists(os.path.join(result_save_rootdir, SubjectId_of_interest, experiment_name, 'result_analysis', 'performance.txt'))
-            if AlreadyFinished:
-                print('{}, lr:{} dropout:{} already finished, Do Not Rerun, continue to next setting'.format(SubjectId_of_interest, lr, dropout), flush = True)
-                continue
 
             #derived arg
             result_save_subjectdir = os.path.join(result_save_rootdir, SubjectId_of_interest, experiment_name)
@@ -159,48 +121,36 @@ def train_classifier(args_dict):
                 if window_size == 200:
                     total_number_train_chunks = 304
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:228]
-#                     val_index = total_index[244:]
                     train_index = total_index[:152]
                     val_index = total_index[152:]
         
                 elif window_size == 150:
                     total_number_train_chunks = 368
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:276]
-#                     val_index = total_index[295:]
                     train_index = total_index[:184]
                     val_index = total_index[184:]
         
                 elif window_size == 100:
                     total_number_train_chunks = 436
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:327]
-#                     val_index = total_index[349:]
                     train_index = total_index[:218]
                     val_index = total_index[218:]
                     
                 elif window_size == 50:
                     total_number_train_chunks = 504
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:388]
-#                     val_index = total_index[404:]
                     train_index = total_index[:252]
                     val_index = total_index[252:]
         
                 elif window_size == 25:
                     total_number_train_chunks = 536
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:422]
-#                     val_index = total_index[429:]
                     train_index = total_index[:268]
                     val_index = total_index[268:]
         
                 elif window_size == 10:
                     total_number_train_chunks = 556
                     total_index = np.arange(total_number_train_chunks)
-#                     train_index = total_index[:443]
-#                     val_index = total_index[445:]
                     train_index = total_index[:278]
                     val_index = total_index[278:]
         
@@ -258,7 +208,6 @@ def train_classifier(args_dict):
 
                     torch.save(model.state_dict(), os.path.join(result_save_subject_checkpointdir, 'best_model.statedict'))
 
-                    #in the script use the name "logits" (what we mean in the code is score after log-softmax normalization) and "probabilities" interchangibly 
                     test_accuracy, test_class_predictions, test_class_labels, test_logits = eval_model(model, sub_test_loader, device)
                     print('test accuracy at this epoch is {}'.format(test_accuracy))
 
@@ -305,10 +254,6 @@ if __name__=='__main__':
     SubjectId_of_interest = args.SubjectId_of_interest
     classification_task = args.classification_task
     restore_file = args.restore_file
-    
-#     cv_train_batch_size = args.cv_train_batch_size
-#     cv_val_batch_size = args.cv_val_batch_size
-#     test_batch_size = args.test_batch_size
     n_epoch = args.n_epoch
 
     
@@ -321,7 +266,6 @@ if __name__=='__main__':
     print('type(restore_file): {}'.format(type(restore_file)))
     print('type(n_epoch): {}'.format(type(n_epoch)))
        
-    
     args_dict = edict() 
     
     args_dict.gpu_idx = gpu_idx
@@ -331,12 +275,7 @@ if __name__=='__main__':
     args_dict.SubjectId_of_interest = SubjectId_of_interest
     args_dict.classification_task = classification_task
     args_dict.restore_file = restore_file
-#     args_dict.cv_train_batch_size = cv_train_batch_size
-#     args_dict.cv_val_batch_size = cv_val_batch_size
-#     args_dict.test_batch_size = test_batch_size
     args_dict.n_epoch = n_epoch
-
-    
     
     seed_everything(seed)
     train_classifier(args_dict)

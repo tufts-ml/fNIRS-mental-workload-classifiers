@@ -24,10 +24,6 @@ parser.add_argument('--window_size', default=200, type=int, help='window size')
 parser.add_argument('--result_save_rootdir', default='./experiments', help="Directory containing the dataset")
 parser.add_argument('--classification_task', default='four_class', help='binary or four-class classification')
 parser.add_argument('--restore_file', default='None', help="xxx.statedict")
-# #fixed hyper for 40sec binary classification tasl
-# parser.add_argument('--cv_train_batch_size', default=243, type=int, help="cross validation train batch size")
-# parser.add_argument('--cv_val_batch_size', default=61, type=int, help="cross validation val batch size")
-# parser.add_argument('--test_batch_size', default=304, type=int, help="test batch size")
 parser.add_argument('--n_epoch', default=100, type=int, help="number of epoch")
 parser.add_argument('--setting', default='seed1', help='which predefined train val test split scenario')
 
@@ -52,42 +48,20 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects_URG,
     result_save_rootdir = args_dict.result_save_rootdir
     classification_task = args_dict.classification_task
     restore_file = args_dict.restore_file
-#     cv_train_batch_size = args_dict.cv_train_batch_size 
-#     cv_val_batch_size = args_dict.cv_val_batch_size
-#     test_batch_size = args_dict.test_batch_size 
     n_epoch = args_dict.n_epoch
     
-    
-    if window_size == 10:
-        model_to_use = models.EEGNet10
-        num_chunk_this_window_size = 2224
-    elif window_size == 25:
-        model_to_use = models.EEGNet25
-        num_chunk_this_window_size = 2144
-    elif window_size == 50:
-        model_to_use = models.EEGNet50
-        num_chunk_this_window_size = 2016
-    elif window_size == 100:
-        model_to_use = models.EEGNet100
-        num_chunk_this_window_size = 1744
-    elif window_size == 150:
-        model_to_use = models.EEGNet150
-        num_chunk_this_window_size = 1488
-    elif window_size == 200:
-        model_to_use = models.EEGNet
-        num_chunk_this_window_size = 1216
-    else:
-        raise NameError('not supported window size')
+    model_to_use = models.EEGNet150
+    num_chunk_this_window_size = 1488
        
 
-    if classification_task == 'four_class':
-        data_loading_function = brain_data.read_subject_csv
-        confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
-        
-    elif classification_task == 'binary':
+    if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
         
+#     elif classification_task == 'four_class':
+#         data_loading_function = brain_data.read_subject_csv
+#         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
+
     else:
         raise NameError('not supported classification type')
         
@@ -143,10 +117,6 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects_URG,
 
     #cross validation:
     lrs = [0.001, 0.01, 0.1, 1.0, 10.0]
-#     lrs = [0.001, 0.01]
-#     lrs = [0.1]
-#     lrs = [1.0, 10.0]
-
     dropouts = [0.25, 0.5, 0.75]
     
     for lr in lrs:
@@ -248,7 +218,6 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects_URG,
                     for test_subject in test_subjects:
                         torch.save(model.state_dict(), os.path.join(test_subjects_dict[test_subject]['result_save_subject_checkpointdir'], 'best_model.statedict'))
                         
-                        #in the script use the name "logits" (what we mean in the code is score after log-softmax normalization) and "probabilities" interchangibly 
                         test_accuracy, test_class_predictions, test_class_labels, test_logits = eval_model(model, test_subjects_dict[test_subject]['sub_test_loader'], device)
                         
                         print('test accuracy this epoch for subject: {} is {}'.format(test_subject, test_accuracy))
@@ -291,10 +260,6 @@ if __name__=='__main__':
     result_save_rootdir = args.result_save_rootdir
     classification_task = args.classification_task
     restore_file = args.restore_file
-    
-#     cv_train_batch_size = args.cv_train_batch_size
-#     cv_val_batch_size = args.cv_val_batch_size
-#     test_batch_size = args.test_batch_size
     n_epoch = args.n_epoch
     setting = args.setting
 
@@ -370,9 +335,6 @@ if __name__=='__main__':
     args_dict.result_save_rootdir = result_save_rootdir
     args_dict.classification_task = classification_task
     args_dict.restore_file = restore_file
-#     args_dict.cv_train_batch_size = cv_train_batch_size
-#     args_dict.cv_val_batch_size = cv_val_batch_size
-#     args_dict.test_batch_size = test_batch_size
     args_dict.n_epoch = n_epoch
     
     
