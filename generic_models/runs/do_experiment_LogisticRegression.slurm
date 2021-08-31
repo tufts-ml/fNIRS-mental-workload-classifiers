@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-python3 /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/DeepConvNet_FixedTrainValSplit.py \
+CUDA_VISIBLE_DEVICES=$gpu_idx python3 ../LogisticRegression.py \
     --data_dir $data_dir \
     --window_size $window_size \
     --classification_task $classification_task\
     --result_save_rootdir $result_save_rootdir \
     --setting $setting \
-    --restore_file $restore_file\
-    --n_epoch $n_epoch\
 
     

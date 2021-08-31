@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CUDA_VISIBLE_DEVICES=$gpu_idx python3 /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/WhiteSubset/RandomForest_FixedTrainValSplit.py \
+CUDA_VISIBLE_DEVICES=$gpu_idx python3 ../RandomForest.py \
     --data_dir $data_dir \
     --window_size $window_size \
     --classification_task $classification_task\

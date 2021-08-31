@@ -17,18 +17,18 @@ export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/data/bp
 export window_size=150
 export classification_task='binary'
 export scenario='16vs4'
-export bucket='TestBucket9'
-export setting="16vs4_TestBucket9"
+export bucket='TestBucket7'
+export setting="16vs4_TestBucket7"
 export result_save_rootdir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/DeepConvNet/binary/$scenario/$bucket" 
 export n_epoch=600
 export restore_file='None'
 
 if [[ $ACTION_NAME == 'submit' ]]; then
     ## Use this line to submit the experiment to the batch scheduler
-    sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/runs_FixedTrainValSplit/do_experiment_DeepConvNet.slurm
+    sbatch < ../../do_experiment_DeepConvNet.slurm
 
 elif [[ $ACTION_NAME == 'run_here' ]]; then
     ## Use this line to just run interactively
-    bash /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/runs_FixedTrainValSplit/do_experiment_DeepConvNet.slurm
+    bash ../../do_experiment_DeepConvNet.slurm
 fi
 
