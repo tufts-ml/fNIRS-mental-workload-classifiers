@@ -29,3 +29,6 @@ Code for runing each experiment in the paper are located in their own folders:
 The commands for reproducing results in the paper are provided in [runs](runs/) subfolders inside each experiment folders.
 
 
+# Analysing results
+
+training curves, confusion matrix, checkpoints etc will be automatically saved in the specified directory in the after running the training commands.  
