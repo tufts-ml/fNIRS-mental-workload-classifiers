@@ -1,4 +1,31 @@
 # fNIRS-mental-workload-classifiers
 Code for training, evaluating, and visualizing performance of mental workload classification using fNIRS BCI sensors
 
-So far just a demo of a few desired figures. More to come (from hz)
+# Setup
+### Download dataset
+Please visit our website https://tufts-hci-lab.github.io/code_and_datasets/fNIRS2MW.html and download the data.
+
+### Install Anaconda
+Follow the instructions here: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+
+### Create environment
+conda env create -f environment.yml
+
+# Running experiments
+Code for runing each experiment in the paper are located in their own folders:
+
+[SelectWindowSize](SelectWindowSize/): optimal window size experiments using Random Forest and Logistic Regression
+
+[subject_specific_models](subject_specific_models/): subject-speicific models using DeepConvNet/EEGNet/Logistic Regression and Random Forest with the selected window size of 30sec
+
+[generic_model](generic_models/): generic-models using DeepConvNet/EEGNet/Logistic Regression and Random Forest with the selected window size of 30sec. 3 scenarios of the generic pool size are experimented (64, 16, 4) 
+
+[generic_finetuning_models](generic_finetuning_models/): finetuning the DeepConvNet and EEGNet from corresponding checkpoint of the 64-subject generic pool models with the selected window size of 30sec.
+
+[domain_adaptation](domain_adaptation/): utilizing CORAL with Logistic Regression and Random Forest with the selected window size of 30sec. 1 scenario is experimented (generic pool size of 64 subjects and utilizing the target subject's full train set for domain adaptation) 
+
+[subgroup_analysis](subgroup_analysis/): training a generic model solely from subjects of one subgroup's, and see how the performance generalize to othe subgroups with the selected window size of 30sec. Two scenario are experimented (training on White and training on Asian) (since these are the two majority groups in our dataset) 
+
+The commands for reproducing results in the paper are provided in [runs](runs/) subfolders inside each experiment folders.
+
+
