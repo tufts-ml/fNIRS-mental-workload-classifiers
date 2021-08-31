@@ -24,36 +24,6 @@ class brain_dataset(Dataset):
     def __get_instance_list__(self):
         return np.array(self.instance_list).shape
     
-    
-def read_subject_csv(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O', 'AB_I_DO', 'AB_PHI_DO', 'CD_I_O', 'CD_PHI_O',
-       'CD_I_DO', 'CD_PHI_DO'], num_chunk_this_window_size = 2224):
-    
-    '''
-    For four-class classification: 0 vs 1 vs 2 vs 3
-    '''
-    
-    instance_list = []
-    instance_label = []
-    
-    # each subject csv file contain 2224 chunks (for window size 10 stride 3) 
-    subject_df = pd.read_csv(path) 
-    assert np.max(subject_df.chunk.values) + 1 == num_chunk_this_window_size, '{} does not have {} chunks'.format(path, num_chunk_this_window_size) 
-    
-    subject_df = subject_df[select_feature_columns + ['chunk'] + ['label']]
-
-    #chunk id: 0 to 2223 (for window size 10 stride 3)
-    for i in range(0, num_chunk_this_window_size):
-        chunk_matrix = subject_df.iloc[:,:-2].loc[subject_df['chunk'] == i].values
-        instance_list.append(chunk_matrix)
-
-        label_for_this_segment = subject_df[subject_df['chunk'] == i].label.values[0]
-        
-        instance_label.append(label_for_this_segment)
-            
-    instance_list = np.array(instance_list, dtype=np.float32) 
-    instance_label = np.array(instance_label, dtype=np.int64)
-    
-    return instance_list, instance_label
 
 
 def read_subject_csv_binary(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O', 'AB_I_DO', 'AB_PHI_DO', 'CD_I_O', 'CD_PHI_O',
@@ -98,36 +68,6 @@ def read_subject_csv_binary(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O'
     
     return instance_list, instance_label
 
-
-def read_subject_csv_SelectWindowSize(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O', 'AB_I_DO', 'AB_PHI_DO', 'CD_I_O', 'CD_PHI_O',
-       'CD_I_DO', 'CD_PHI_DO']):
-    
-    '''
-    For four-class classification: 0 vs 1 vs 2 vs 3
-    '''
-    
-    instance_list = []
-    instance_label = []
-    
-    # each subject csv file contain 608 chunks 
-    subject_df = pd.read_csv(path) 
-    assert np.max(subject_df.chunk.values) + 1 == 608, '{} SelectWindowSize testset does not have 608 chunks'.format(path) 
-    
-    subject_df = subject_df[select_feature_columns + ['chunk'] + ['label']]
-
-    #chunk id: 0 to 608
-    for i in range(0, 608):
-        chunk_matrix = subject_df.iloc[:,:-2].loc[subject_df['chunk'] == i].values
-        instance_list.append(chunk_matrix)
-
-        label_for_this_segment = subject_df[subject_df['chunk'] == i].label.values[0]
-        
-        instance_label.append(label_for_this_segment)
-            
-    instance_list = np.array(instance_list, dtype=np.float32) 
-    instance_label = np.array(instance_label, dtype=np.int64)
-    
-    return instance_list, instance_label
 
 
 def read_subject_csv_binary_SelectWindowSize(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O', 'AB_I_DO', 'AB_PHI_DO', 'CD_I_O', 'CD_PHI_O',
