@@ -10,7 +10,7 @@ from tqdm import trange
 # from sklearn.model_selection import KFold
 from sklearn.linear_model import LogisticRegression
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/helpers/')
+sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
 from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit

@@ -13,10 +13,10 @@ else
 fi
 
 export gpu_idx=0
-export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/data/bpf_Leon/Visual/size_20sec_100ts_stride_3ts/'
-export SelectWindowSize_testset_dir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/data/bpf_UsedForSelectingWindowSize/Visual/size_20sec_100ts_stride_3ts/'
+export data_dir='YOUR_PATH/fNIRS-mental-workload-classifiers/data/chunk_data/size_20sec_100ts_stride_3ts/'#PLEASE EDIT YOUR PATH, 
+export SelectWindowSize_testset_dir='YOUR_PATH/fNIRS-mental-workload-classifiers/data/chunk_data/TestSet_UsedForSelectingWindowSize/size_100ts_stride_3ts/'#PLEASE EDIT YOUR PATH, 
 export window_size=100
-export result_save_rootdir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_SelectWindowSize/RandomForest/binary/window_size100'
+export result_save_rootdir='YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/SelectWindowSize/RandomForest/binary/window_size100'#PLEASE EDIT YOUR PATH, 
 export classification_task='binary'
 for SubjectId_of_interest in 1 13 14 15 20 21 22 23 24 25 27 28 29 31 32 34 35 36 37 38 40 42 43 44 45 46 47 48 49 5 51 52 54 55 56 57 58 60 61 62 63 64 65 68 69 7 70 71 72 73 74 75 76 78 79 80 81 82 83 84 85 86 91 92 93 94 95 97
 
@@ -27,11 +27,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/SelectWindowSize/runs_FixedTrainValSplit/do_experiment_RandomForest_FixedTrainValSplit.slurm
+        sbatch < YOUR_PATH/fNIRS-mental-workload-classifiers/SelectWindowSize/runs/do_experiment_RandomForest.slurm #PLEASE EDIT YOUR PATH, 
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/SelectWindowSize/runs_FixedTrainValSplit/do_experiment_RandomForest_FixedTrainValSplit.slurm
+        bash YOUR_PATH/fNIRS-mental-workload-classifiers/SelectWindowSize/runs/do_experiment_RandomForest.slurm #PLEASE EDIT YOUR PATH, 
     fi
 
 done
