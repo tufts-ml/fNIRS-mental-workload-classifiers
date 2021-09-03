@@ -29,7 +29,7 @@ Code for runing each experiment in the paper are located in their own folders:
 The commands for reproducing results in the paper are provided in [runs](runs/) subfolders inside each experiment folders.
 
 ### Demo
-For example, if you want to train subject-specific DeepConvNet. Go to [runs](subject_specific_models/runs_FixedTrainFValSplit/window_size150) within the subject_sepcific_models folder
+For example, if you want to train subject-specific DeepConvNet. Go to [runs](subject_specific_models/runs/window_size150) within the subject_sepcific_models folder
 
 ```
 bash launch_DeepConvNet_150ts.sh run_here
