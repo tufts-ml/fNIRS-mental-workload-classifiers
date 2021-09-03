@@ -30,6 +30,7 @@ The commands for reproducing results in the paper are provided in [runs](runs/) 
 
 ### Demo
 For example, if you want to train subject-specific DeepConvNet. Go to [runs](subject_specific_models/runs/window_size150) within the subject_sepcific_models folder
+**Please modify the paths in the scripts according to your actual paths**
 
 ```
 bash launch_DeepConvNet_150ts.sh run_here
