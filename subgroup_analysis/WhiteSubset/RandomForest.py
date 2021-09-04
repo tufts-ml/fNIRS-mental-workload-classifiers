@@ -8,7 +8,7 @@ from tqdm import trange
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier as rfc
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/helpers/')
+sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
 from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit
@@ -179,50 +179,29 @@ if __name__=='__main__':
     classification_task = args.classification_task
     setting = args.setting
     
-    
-    if setting == 'seed1':
-        train_subjects = [40, 95, 31, 80, 42, 85, 15, 32, 45, 29, 97, 86, 82, 23, 92, 20]
-        val_subjects = [48, 36, 14, 64, 34]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [69, 47, 79, 21, 91, 38]
-        test_subjects_ASIAN = [94, 13, 56, 76, 93, 27]
         
-    elif setting == 'seed2':
+    if setting == 'random_partition1':
         train_subjects = [38, 45, 21, 31, 48, 14, 34, 91, 42, 29, 20, 85, 36, 23, 86, 79]
         val_subjects = [32, 95, 40, 82, 47]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [64, 69, 80, 92, 97, 15]
         test_subjects_ASIAN = [25, 7, 54, 24, 37, 94]
     
-    elif setting == 'seed3':
+    elif setting == 'random_partition2':
         train_subjects = [97, 92, 38, 47, 48, 32, 69, 45, 15, 64, 91, 79, 95, 42, 14, 31]
         val_subjects = [86, 40, 21, 80, 23]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [36, 85, 34, 82, 29, 20]
         test_subjects_ASIAN = [55, 76, 56, 24, 13, 93]
-
-    elif setting == 'seed4':
-        train_subjects = [29, 40, 31, 32, 69, 20, 14, 23, 95, 15, 45, 38, 42, 97, 79, 64]
-        val_subjects = [92, 34, 47, 85, 80]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [21, 91, 86, 36, 82, 48]
-        test_subjects_ASIAN = [84, 93, 13, 37, 5, 51]
     
-    elif setting == 'seed5':
+    elif setting == 'random_partition3':
         train_subjects = [92, 36, 14, 21, 64, 47, 42, 32, 91, 85, 15, 45, 38, 80, 95, 23]
         val_subjects = [29, 40, 31, 82, 48]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [34, 97, 86, 20, 79, 69]
         test_subjects_ASIAN = [49, 57, 43, 7, 56, 61]
-
-    elif setting == 'seed6':
-        train_subjects = [36, 20, 64, 85, 95, 45, 29, 21, 79, 15, 32, 86, 38, 82, 97, 42]
-        val_subjects = [80, 14, 47, 48, 23]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [92, 34, 69, 40, 91, 31]
-        test_subjects_ASIAN = [49, 93, 72, 71, 75, 63]
     
-    elif setting == 'seed7':
+    elif setting == 'random_partition4':
         train_subjects = [21, 47, 92, 40, 36, 97, 48, 20, 91, 38, 82, 64, 23, 42, 79, 95]
         val_subjects = [80, 29, 15, 45, 14]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]

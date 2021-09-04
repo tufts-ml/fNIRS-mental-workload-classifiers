@@ -9,7 +9,7 @@ import argparse
 from easydict import EasyDict as edict
 from tqdm import trange
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/helpers/')
+sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
 from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit
@@ -263,49 +263,29 @@ if __name__=='__main__':
     n_epoch = args.n_epoch
     setting = args.setting
 
-    if setting == 'seed1':
-        train_subjects = [51, 27, 81, 35, 44, 46, 49, 84, 54, 52, 65, 25, 43, 74, 5, 75, 63, 93, 73, 68]
-        val_subjects = [7, 55, 13, 94, 37, 56]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [40, 79, 20, 42, 64, 85]
-        test_subjects_ASIAN = [76, 24, 71, 61, 72, 57]
         
-    elif setting == 'seed2':
+    if setting == 'random_partition1':
         train_subjects = [72, 68, 27, 75, 52, 46, 65, 71, 73, 63, 74, 44, 81, 13, 54, 84, 55, 37, 51, 7]
         val_subjects = [56, 57, 24, 43, 25, 61]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [85, 38, 42, 29, 48, 40]
         test_subjects_ASIAN = [5, 76, 93, 49, 94, 35]
     
-    elif setting == 'seed3':
+    elif setting == 'random_partition2':
         train_subjects = [27, 84, 7, 49, 68, 37, 76, 71, 72, 56, 5, 93, 55, 52, 94, 46, 61, 81, 74, 43]
         val_subjects = [65, 25, 51, 13, 63, 75]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [80, 15, 82, 29, 32, 92]
         test_subjects_ASIAN = [54, 44, 35, 73, 24, 57]
 
-    elif setting == 'seed4':
+    elif setting == 'random_partition3':
         train_subjects = [55, 25, 71, 24, 68, 49, 46, 13, 44, 5, 65, 54, 84, 61, 63, 7, 27, 74, 43, 73]
         val_subjects = [72, 76, 51, 57, 75, 81]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
         test_subjects_WHITE = [79, 95, 31, 32, 92, 34]
         test_subjects_ASIAN = [94, 56, 93, 35, 37, 52]
     
-    elif setting == 'seed5':
-        train_subjects = [72, 71, 24, 44, 74, 37, 46, 27, 76, 49, 93, 56, 13, 75, 94, 61, 65, 25, 84, 55]
-        val_subjects = [7, 5, 73, 51, 35, 57]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [48, 82, 23, 47, 86, 42]
-        test_subjects_ASIAN = [68, 54, 81, 52, 43, 63]
-
-    elif setting == 'seed6':
-        train_subjects = [44, 52, 74, 93, 43, 13, 72, 49, 51, 54, 81, 57, 7, 55, 75, 37, 27, 94, 5, 65]
-        val_subjects = [84, 46, 56, 24, 63, 76]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [86, 80, 48, 31, 21, 14]
-        test_subjects_ASIAN = [71, 73, 61, 68, 25, 35]
-    
-    elif setting == 'seed7':
+    elif setting == 'random_partition4':
         train_subjects = [25, 63, 56, 74, 72, 76, 7, 24, 46, 43, 5, 13, 71, 44, 51, 52, 27, 94, 55, 81]
         val_subjects = [57, 37, 68, 75, 54, 65]
         test_subjects_URG = [22, 70, 78, 28, 60, 58]
