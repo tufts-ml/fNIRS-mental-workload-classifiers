@@ -13,20 +13,20 @@ else
 fi
 
 export gpu_idx=0
-export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/data/bpf_Leon/Visual/size_30sec_150ts_stride_3ts/'
+export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/data/chunk_data/size_30sec_150ts_stride_3ts/'
 export window_size=150
 export classification_task='binary'
 export scenario='16vs4'
 export bucket='TestBucket3'
 export setting="16vs4_TestBucket3"
-export result_save_rootdir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/RandomForest/binary/$scenario/$bucket" 
+export result_save_rootdir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/generic_models/RandomForest/binary/$scenario/$bucket" 
 
 if [[ $ACTION_NAME == 'submit' ]]; then
     ## Use this line to submit the experiment to the batch scheduler
-    sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/runs_FixedTrainValSplit/do_experiment_RandomForest.slurm
+    sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_RandomForest.slurm
 
 elif [[ $ACTION_NAME == 'run_here' ]]; then
     ## Use this line to just run interactively
-    bash /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/generic_models/runs_FixedTrainValSplit/do_experiment_RandomForest.slurm
+    bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_RandomForest.slurm
 fi
 
