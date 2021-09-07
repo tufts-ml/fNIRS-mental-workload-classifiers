@@ -13,9 +13,9 @@ else
 fi
 
 export gpu_idx=0
-export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/data/bpf_Leon/Visual/size_30sec_150ts_stride_3ts/'
+export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/data/chunk_data/size_30sec_150ts_stride_3ts/'
 export window_size=150
-export result_save_rootdir='/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_subject_specific_models/DeepConvNet/binary/window_size150'
+export result_save_rootdir='/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/subject_specific_models/DeepConvNet/binary/window_size150'
 export classification_task='binary'
 export restore_file='None'
 export n_epoch=300
@@ -29,11 +29,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/subject_specific_models/runs_FixedTrainValSplit/do_experiment_DeepConvNet_FixedTrainValSplit.slurm
+        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/subject_specific_models/runs/do_experiment_DeepConvNet.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/subject_specific_models/runs_FixedTrainValSplit/do_experiment_DeepConvNet_FixedTrainValSplit.slurm
+        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/subject_specific_models/runs/do_experiment_DeepConvNet.slurm
     fi
 
 done

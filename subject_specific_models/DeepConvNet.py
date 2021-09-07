@@ -10,7 +10,7 @@ import argparse
 from easydict import EasyDict as edict
 from tqdm import trange
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/helpers/')
+sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
 from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit, write_program_time
@@ -18,7 +18,7 @@ from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, 
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', default=0, type=int, help="random seed")
 parser.add_argument('--gpu_idx', default=0, type=int, help="gpu idx")
-parser.add_argument('--data_dir', default='../data/Leon/Visual/size_40sec_200ts_stride_3ts/', help="folder to the dataset")
+parser.add_argument('--data_dir', default='../data/size_40sec_200ts_stride_3ts/', help="folder to the dataset")
 parser.add_argument('--window_size', default=200, type=int, help='window size')
 parser.add_argument('--result_save_rootdir', default='./experiments', help="Directory containing the dataset")
 parser.add_argument('--SubjectId_of_interest', default='1', help="training personal model for which subject")
