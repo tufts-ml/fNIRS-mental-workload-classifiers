@@ -40,3 +40,20 @@ bash launch_DeepConvNet_150ts.sh run_here
 # Analysing results
 
 training curves, confusion matrix, checkpoints etc will be automatically saved in the specified directory in the after running the training commands.  
+
+### Synthesizing hyperparameter search results
+
+we also provide scripts for synthesizing hyperparameter search results [synthesizing_results] (synthesizing_results/). For example, if you want to analyse results for subject-specific DeepConvNet, go to the [corresponding folder] (synthesizing_results/subject_specific_models/binary/DeepConvNet) within the synthesizing_results/ folder. 
+
+**(Please modify the paths in the scripts according to your actual paths)**
+
+```
+bash launch_DeepConvNet_150ts.sh run_here
+```
+This will generate a csv file called **hypersearch_summary.csv** for each subject. 
+
+```
+bash launch_synthesize_all_subjects.sh run_here
+```
+
+This will generate a csv file called **AllSubjects_summary.csv** for this experiment.
