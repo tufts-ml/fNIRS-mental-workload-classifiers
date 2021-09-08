@@ -43,7 +43,7 @@ training curves, confusion matrix, checkpoints etc will be automatically saved i
 
 ### Synthesizing hyperparameter search results
 
-we also provide scripts for synthesizing hyperparameter search results [synthesizing_results] (synthesizing_results/). For example, if you want to analyse results for subject-specific DeepConvNet, go to the [corresponding folder] (synthesizing_results/subject_specific_models/binary/DeepConvNet) within the synthesizing_results/ folder. 
+we also provide scripts for synthesizing hyperparameter search results [synthesizing_results](synthesizing_results/). For example, if you want to analyse results for subject-specific DeepConvNet, go to the [corresponding folder](synthesizing_results/subject_specific_models/binary/DeepConvNet) within the synthesizing_results/ folder. 
 
 **(Please modify the paths in the scripts according to your actual paths)**
 
