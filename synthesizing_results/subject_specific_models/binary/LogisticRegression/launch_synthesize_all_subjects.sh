@@ -13,7 +13,7 @@ else
 fi
 
 
-for experiment in window_size200 window_size150 window_size100 window_size50 window_size25 window_size10
+for experiment in window_size150
 do
     export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_subject_specific_models/LogisticRegression/binary/$experiment"
     

@@ -13,7 +13,7 @@ else
 fi
 
 
-for experiment in seed1 seed2 seed3 seed4 seed5 seed6 seed7
+for experiment in random_partition1 random_partition2 random_partition3 random_partition4
 do
     export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/WhiteSubset/RandomForest/binary/21vs6/$experiment"
     
