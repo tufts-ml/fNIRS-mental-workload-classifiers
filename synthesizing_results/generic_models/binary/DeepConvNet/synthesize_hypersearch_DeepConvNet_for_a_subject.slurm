@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-python /cluster/tufts/hugheslab/zhuang12/general_utilities/synthesize_hyperparameter_search_results/NuripsDataSet_FixedTrainValSplit/generic_models/synthesize_hypersearch_DeepConvNet_for_a_subject.py\
+python /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/fNIRS-mental_workload-classifiers/generic_models/synthesize_hypersearch_DeepConvNet_for_a_subject.py\
     --experiment_dir $experiment_dir \

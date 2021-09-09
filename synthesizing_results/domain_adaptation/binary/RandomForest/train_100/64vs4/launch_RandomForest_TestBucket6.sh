@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/general_utilities/synthesize_hyperparameter_search_results/NuripsDataSet_FixedTrainValSplit/domain_adaptation/binary/RandomForest/train_100/ynthesize_hypersearch_RandomForest_for_a_subject.slurm
+        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/RandomForest/train_100/ynthesize_hypersearch_RandomForest_for_a_subject.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/general_utilities/synthesize_hyperparameter_search_results/NuripsDataSet_FixedTrainValSplit/domain_adaptation/binary/RandomForest/train_100/synthesize_hypersearch_RandomForest_for_a_subject.slurm
+        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/RandomForest/train_100/synthesize_hypersearch_RandomForest_for_a_subject.slurm
     fi
     
 done

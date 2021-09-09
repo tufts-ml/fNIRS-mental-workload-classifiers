@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/general_utilities/synthesize_hyperparameter_search_results/NuripsDataSet_FixedTrainValSplit/generic_models/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
+        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/general_utilities/synthesize_hyperparameter_search_results/NuripsDataSet_FixedTrainValSplit/generic_models/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
+        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
     fi
     
 done
