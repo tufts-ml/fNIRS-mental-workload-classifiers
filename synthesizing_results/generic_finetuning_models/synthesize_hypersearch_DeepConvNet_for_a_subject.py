@@ -4,9 +4,7 @@ import csv
 import argparse
 
 def extract_experiment_setting(experiment_name):
-    '''
-    extract the hyperparamter for LR: C
-    '''
+    
     print('Passed in experiment_name is {}'.format(experiment_name), flush = True)
     
     hyper_parameter_dict = {}

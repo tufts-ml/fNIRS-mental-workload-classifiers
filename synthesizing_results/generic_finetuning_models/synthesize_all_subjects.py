@@ -19,8 +19,6 @@ def main(experiment_dir, summary_save_dir):
         if fileEmpty:
             writer.writeheader()
         
-#         subject_list = [1, 13, 14, 15, 20, 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 32, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 5, 51, 52, 54, 55, 56, 57, 58, 60, 61, 62, 63, 64, 65, 67, 68, 69, 7, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 91, 92, 93, 94, 95, 97]
-        
         buckets = ['TestBucket1', 'TestBucket2', 'TestBucket3', 'TestBucket4', 'TestBucket5', 'TestBucket6', 'TestBucket7', 'TestBucket8', 'TestBucket9', 'TestBucket10', 'TestBucket11', 'TestBucket12', 'TestBucket13', 'TestBucket14', 'TestBucket15', 'TestBucket16', 'TestBucket17']
         
         

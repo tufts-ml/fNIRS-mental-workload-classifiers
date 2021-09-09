@@ -28,7 +28,7 @@ def extract_experiment_setting(experiment_name):
 
 def extract_experiment_performance(experiment_dir, experiment_name):
     '''
-    experiment_dir: experiments/FixedTrainValSplit_generic_models/LogisticRegression/binary/64vs4/TestBucket1/56
+    experiment_dir: experiments/generic_models/LogisticRegression/binary/64vs4/TestBucket1/56
     experiment_name: C0.0001
     '''
     

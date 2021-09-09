@@ -15,7 +15,7 @@ fi
 
 for experiment in 64vs4 16vs4 4vs4
 do
-    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/DeepConvNet/binary/$experiment"
+    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/generic_models/DeepConvNet/binary/$experiment"
     
     echo "Current experiment_dir is $experiment_dir"
     

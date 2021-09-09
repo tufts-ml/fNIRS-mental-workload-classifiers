@@ -15,7 +15,7 @@ fi
 
 for SubjectId_of_interest in 65 28 78 37
 do
-    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/LogisticRegression/binary/64vs4/TestBucket13/$SubjectId_of_interest"
+    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/generic_models/LogisticRegression/binary/64vs4/TestBucket13/$SubjectId_of_interest"
     
     echo "Current experiment_dir is $experiment_dir"
     
