@@ -1,8 +1,8 @@
 #folders
 data/
 experiments/
-demo_perf_as_data_grows
-demo_scatter_plot_by_subj
+demo_perf_as_data_grows/
+demo_scatter_plot_by_subj/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
