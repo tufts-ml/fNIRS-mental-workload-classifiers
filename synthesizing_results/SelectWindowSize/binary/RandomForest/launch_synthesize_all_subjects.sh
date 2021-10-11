@@ -15,7 +15,7 @@ fi
 
 for experiment in window_size200 window_size150 window_size100 window_size50 window_size25 window_size10
 do
-    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/SelectWindowSize/RandomForest/binary/$experiment"
+    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/SelectWindowSize/RandomForest/binary/$experiment"
     
     echo "Current experiment_dir is $experiment_dir"
     
@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/SelectWindowSize/binary/RandomForest/synthesize_all_subjects.slurm
+        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/SelectWindowSize/binary/RandomForest/synthesize_all_subjects.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/SelectWindowSize/binary/RandomForest/synthesize_all_subjects.slurm
+        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/SelectWindowSize/binary/RandomForest/synthesize_all_subjects.slurm
     fi
     
 done

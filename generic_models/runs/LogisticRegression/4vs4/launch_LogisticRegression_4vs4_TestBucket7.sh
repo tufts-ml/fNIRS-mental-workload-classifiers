@@ -13,20 +13,20 @@ else
 fi
 
 export gpu_idx=0
-export data_dir='/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/data/chunk_data/size_30sec_150ts_stride_3ts/'
+export data_dir='YOUR_PATH/fNIRS-mental-workload-classifiers/data/chunk_data/size_30sec_150ts_stride_3ts/'
 export window_size=150
 export classification_task='binary'
 export scenario='4vs4'
 export bucket='TestBucket7'
 export setting="4vs4_TestBucket7"
-export result_save_rootdir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/generic_models/LogisticRegression/binary/$scenario/$bucket" 
+export result_save_rootdir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/LogisticRegression/binary/$scenario/$bucket" 
 
 if [[ $ACTION_NAME == 'submit' ]]; then
     ## Use this line to submit the experiment to the batch scheduler
-    sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_LogisticRegression.slurm
+    sbatch < YOUR_PATH/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_LogisticRegression.slurm
 
 elif [[ $ACTION_NAME == 'run_here' ]]; then
     ## Use this line to just run interactively
-    bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_LogisticRegression.slurm
+    bash YOUR_PATH/fNIRS-mental-workload-classifiers/generic_models/runs/do_experiment_LogisticRegression.slurm
 fi
 

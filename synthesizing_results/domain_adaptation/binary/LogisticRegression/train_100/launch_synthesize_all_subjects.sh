@@ -16,7 +16,7 @@ fi
 # for experiment in 64vs4 16vs4 4vs4
 for experiment in 64vs4
 do
-    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/domain_adaptation/LogisticRegression/binary/train_100/$experiment"
+    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/domain_adaptation/LogisticRegression/binary/train_100/$experiment"
     
     echo "Current experiment_dir is $experiment_dir"
     
@@ -24,11 +24,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/LogisticRegression/train_100/synthesize_all_subjects.slurm
+        sbatch < YOUR_PATH/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/LogisticRegression/train_100/synthesize_all_subjects.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/LogisticRegression/train_100/synthesize_all_subjects.slurm
+        bash YOUR_PATH/fNIRS-mental-workload-classifiers/synthesizing_results/domain_adaptation/binary/LogisticRegression/train_100/synthesize_all_subjects.slurm
     fi
     
 done

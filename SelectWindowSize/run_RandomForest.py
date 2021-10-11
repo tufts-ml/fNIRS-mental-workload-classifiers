@@ -8,7 +8,7 @@ from tqdm import trange
 # from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier as rfc
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
+sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
 from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit

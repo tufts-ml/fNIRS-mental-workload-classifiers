@@ -9,10 +9,10 @@ import argparse
 from easydict import EasyDict as edict
 from tqdm import trange
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
+sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers/')
 import models
 import brain_data
-from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit
+from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, save_training_curves_FixedTrainValSplit_overlaid, write_performance_info_FixedTrainValSplit, write_initial_test_accuracy
 
 # from sklearn.model_selection import KFold
 
@@ -45,10 +45,10 @@ def train_classifier(args_dict, test_subjects):
     adapt_on = args_dict.adapt_on
     n_epoch = args_dict.n_epoch
     
-    model_to_use = models.EEGNet150
-    num_chunk_this_window_size = 1488
-        
-
+    model_to_use = models.DeepConvNet150
+    num_chunk_this_window_size = 1488  
+    
+    
     if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
@@ -56,7 +56,7 @@ def train_classifier(args_dict, test_subjects):
 #     elif classification_task == 'four_class':
 #         data_loading_function = brain_data.read_subject_csv
 #         confusion_matrix_figure_labels = ['0back', '1back', '2back', '3back']
-    
+        
     else:
         raise NameError('not supported classification type')
         
@@ -95,9 +95,9 @@ def train_classifier(args_dict, test_subjects):
         if adapt_on == 'train_100':
             print('adapt on data size: {}'.format(len(sub_train_feature_array)))
 
-#         elif adapt_on == 'train_50':
-#             sub_train_feature_array = sub_train_feature_array[-int(0.5*half_sub_data_len):]
-#             print('adapt on data size: {}'.format(len(sub_train_feature_array)))
+        elif adapt_on == 'train_50':
+            sub_train_feature_array = sub_train_feature_array[-int(0.5*half_sub_data_len):]
+            print('adapt on data size: {}'.format(len(sub_train_feature_array)))
                                                     
         else:
             raise NameError('not on the predefined gride')
@@ -113,7 +113,8 @@ def train_classifier(args_dict, test_subjects):
             
         #cross validation:
 #         lrs = [0.001, 0.01, 0.1, 1.0, 10.0]
-        lrs = [0.001, 0.003, 0.01, 0.03, 0.1]
+        lrs = [0.0001, 0.001, 0.01, 0.1, 1.0]
+
         dropouts = [0.25, 0.5, 0.75]
 
         for lr in lrs:
@@ -171,16 +172,25 @@ def train_classifier(args_dict, test_subjects):
                 best_val_accuracy = 0.0    
                 epoch_train_loss = []
                 epoch_train_accuracy = []
-                epoch_validation_accuracy = []    
+                epoch_validation_accuracy = []  
+                epoch_test_accuracy = []
+                
+                #also record the initial test accuracy
+                initial_test_accuracy, _, _, _ = eval_model(model, sub_test_loader, device)
+                epoch_test_accuracy.append(initial_test_accuracy)
+                #write the initial test accuracy to file
+                write_initial_test_accuracy(result_save_subject_resultanalysisdir, initial_test_accuracy)
                 
                 for epoch in trange(n_epoch, desc='1-fold cross validation'):
                     average_loss_this_epoch = train_one_epoch(model, optimizer, criterion, sub_cv_train_loader, device)
                     val_accuracy, _, _, _ = eval_model(model, sub_cv_val_loader, device)
+                    test_accuracy, _, _, _ = eval_model(model, sub_test_loader, device)
                     train_accuracy, _, _ , _ = eval_model(model, sub_cv_train_loader, device)
 
                     epoch_train_loss.append(average_loss_this_epoch)
                     epoch_train_accuracy.append(train_accuracy)
                     epoch_validation_accuracy.append(val_accuracy)
+                    epoch_test_accuracy.append(test_accuracy)
 
                     #update is_best flag
                     is_best = val_accuracy >= best_val_accuracy
@@ -188,7 +198,6 @@ def train_classifier(args_dict, test_subjects):
                     if is_best:
                         best_val_accuracy = val_accuracy
                         torch.save(model.state_dict(), os.path.join(result_save_subject_checkpointdir, 'best_model.statedict'))
-                        #in the script use the name "logits" (what we mean in the code is score after log-softmax normalization) and "probabilities" interchangibly 
                         test_accuracy, test_class_predictions, test_class_labels, test_logits = eval_model(model, sub_test_loader, device)
                         print('subject {} test accuracy at this epoch is {}'.format(test_subject, test_accuracy), flush=True)
                         result_save_dict['bestepoch_test_accuracy'] = test_accuracy
@@ -197,7 +206,10 @@ def train_classifier(args_dict, test_subjects):
                         result_save_dict['bestepoch_test_class_labels'] = test_class_labels.copy()
                         
                 #save training curve 
-                save_training_curves_FixedTrainValSplit('training_curve.png', result_save_subject_trainingcurvedir, epoch_train_loss, epoch_train_accuracy, epoch_validation_accuracy)
+                save_training_curves_FixedTrainValSplit('training_curve.png', result_save_subject_trainingcurvedir, epoch_train_loss, epoch_train_accuracy, epoch_validation_accuracy, epoch_test_accuracy)
+                
+                #save overlaid training curve
+                save_training_curves_FixedTrainValSplit_overlaid('training_curve_overlaid.png', result_save_subject_trainingcurvedir, epoch_train_loss, epoch_train_accuracy, epoch_validation_accuracy, epoch_test_accuracy)
                 
                 #confusion matrix 
                 plot_confusion_matrix(test_class_predictions, test_class_labels, confusion_matrix_figure_labels, result_save_subject_resultanalysisdir, 'test_confusion_matrix.png')

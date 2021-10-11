@@ -15,7 +15,7 @@ fi
 
 for experiment in random_partition1 random_partition2 random_partition3 random_partition4
 do
-    export experiment_dir="/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/experiments/generic_models/AsianSubset/EEGNet/binary/21vs6/$experiment"
+    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/AsianSubset/EEGNet/binary/21vs6/$experiment"
     
     echo "Current experiment_dir is $experiment_dir"
     
@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/EEGNet/synthesize_all_subjects.slurm
+        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/EEGNet/synthesize_all_subjects.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash /cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/EEGNet/synthesize_all_subjects.slurm
+        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/EEGNet/synthesize_all_subjects.slurm
     fi
     
 done

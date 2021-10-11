@@ -7,21 +7,49 @@ import time
 
 from easydict import EasyDict as edict
 from tqdm import trange
-from sklearn.model_selection import KFold
+# from sklearn.model_selection import KFold
 from sklearn.linear_model import LogisticRegression
 
-sys.path.insert(0, '/cluster/tufts/hugheslab/zhuang12/HCI/fNIRS-mental-workload-classifiers/helpers/')
+#for CORAL
+import scipy.io
+import scipy.linalg
+
+
+sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers')
 import models
 import brain_data
-from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit, write_program_time
+from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit, write_program_time, write_inference_time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', default=0, type=int, help='random seed')
 parser.add_argument('--data_dir', default='../data/Leon/Visual/size_2sec_10ts_stride_3ts/', help='folder to the train data')
-parser.add_argument('--window_size', default=200, type=int, help='window size')
-parser.add_argument('--result_save_rootdir', default='./experiments', help='folder to the result')
+parser.add_argument('--window_size', default=10, type=int, help='window size')
 parser.add_argument('--classification_task', default='four_class', help='binary or four-class classification')
-parser.add_argument('--setting', default='64vs4_TestBucket1', help='which predefined train val test split scenario')
+parser.add_argument('--result_save_rootdir', default='./experiments', help='folder to the result')
+parser.add_argument('--setting', default='train64test7_bucket1', help='which predefined train test split scenario')
+
+#parameter for CORAL domain adapation
+parser.add_argument('--adapt_on', default='train_100', help="what portion of the test subject' train set is used for adaptation")
+
+#CORAL implementation:
+#https://github.com/jindongwang/transferlearning/blob/master/code/traditional/CORAL/CORAL.py
+def CoralTransform(Xs, Xt):
+    '''
+    Perform CORAL on the source domain features
+    :param Xs: ns * n_feature, source feature
+    :param Xt: nt * n_feature, target feature
+    :return: New source domain features
+    '''
+    cov_src = np.cov(Xs.T) + np.eye(Xs.shape[1])
+    cov_tar = np.cov(Xt.T) + np.eye(Xt.shape[1])
+    
+    A_coral = np.dot(scipy.linalg.fractional_matrix_power(cov_src, -0.5),
+                    scipy.linalg.fractional_matrix_power(cov_tar, 0.5))
+    
+    Xs_new = np.real(np.dot(Xs, A_coral))
+    return Xs_new
+    
+    
 
 def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
     
@@ -29,16 +57,17 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
     train_subjects = [str(i) for i in train_subjects]
     val_subjects = [str(i) for i in val_subjects]
     test_subjects = [str(i) for i in test_subjects]
-    
+        
     #parse args:
     data_dir = args_dict.data_dir
     window_size = args_dict.window_size
+    classification_task = args_dict.classification_task    
     result_save_rootdir = args_dict.result_save_rootdir
-    classification_task = args_dict.classification_task
-    
+#     setting = args_dict.setting  #does not need 'setting' inside train_classifier  
+    adapt_on = args_dict.adapt_on
     num_chunk_this_window_size = 1488
 
-        
+    
     if classification_task == 'binary':
         data_loading_function = brain_data.read_subject_csv_binary
         confusion_matrix_figure_labels = ['0back', '2back']
@@ -51,7 +80,8 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
         raise NameError('not supported classification type')
         
     
-    #create the group train data 
+        
+    #create the group data
     group_model_sub_train_feature_list = []
     group_model_sub_train_label_list = []
     
@@ -65,6 +95,7 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
     group_model_sub_train_label_array = np.concatenate(group_model_sub_train_label_list, axis=0)
     
     transformed_group_model_sub_train_feature_array = featurize(group_model_sub_train_feature_array, classification_task)
+    
     
     
     #create the group val data
@@ -83,40 +114,51 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
     transformed_group_model_sub_val_feature_array = featurize(group_model_sub_val_feature_array, classification_task)
 
     
-    #cross validation
-    Cs = np.logspace(-5,5,11)
-
-    start_time = time.time()
     
-    for C in Cs:
-        experiment_name = 'C{}'.format(C)
+    #Perform domain adapation for each test subject in this bucket
+    for test_subject in test_subjects:
         
-        #create test subjects dict
-        test_subjects_dict = dict()
-        for test_subject in test_subjects:
-            #load this subject's test data
-            sub_feature_array, sub_label_array = data_loading_function(os.path.join(data_dir, 'sub_{}.csv'.format(test_subject)), num_chunk_this_window_size=num_chunk_this_window_size)
-            
-            sub_data_len = len(sub_label_array)
-            assert sub_data_len == int(num_chunk_this_window_size/2), 'subject {} len is not {} for binary classification'.format(test_subject, int(num_chunk_this_window_size/2))
-            half_sub_data_len = int(sub_data_len/2)
-            print('half_sub_data_len: {}'.format(half_sub_data_len), flush=True)
-            
-            sub_test_feature_array = sub_feature_array[half_sub_data_len:]
-            transformed_sub_test_feature_array = featurize(sub_test_feature_array, classification_task)
-            sub_test_label_array = sub_label_array[half_sub_data_len:]
-            
-            #create the dict for this subject: 
-            #each subject's dict has: 'transformed_sub_test_feature_array', 'sub_test_label_array',
-                                    # 'resutl_save_subjectdir', 'resutl_save_subject_checkpointdir', 
-                                    # 'result_save_subject_predictiondir', 'result_save_subject_resultanalysisdir'
-                                    # 'result_save_subject_trainingcurvedir', 'result_save_dir', 
-                        
-            test_subjects_dict[test_subject] = dict()
-            test_subjects_dict[test_subject]['transformed_sub_test_feature_array'] = transformed_sub_test_feature_array
-            test_subjects_dict[test_subject]['sub_test_label_array'] = sub_test_label_array
+        #load this subject's test data
+        sub_feature_array, sub_label_array = data_loading_function(os.path.join(data_dir, 'sub_{}.csv'.format(test_subject)), num_chunk_this_window_size=num_chunk_this_window_size)
+        
+        #sainty check for this test subject's data
+        sub_data_len = len(sub_label_array)
+        assert sub_data_len == int(num_chunk_this_window_size/2), 'subject {} len is not {} for binary classification'.format(test_subject, int(num_chunk_this_window_size/2))
+        
+        half_sub_data_len = int(sub_data_len/2)
+        print('half_sub_data_len: {}'.format(half_sub_data_len), flush=True)
+        
+        #first half of the test subject's data is train set, the second half is test set
+        sub_test_feature_array = sub_feature_array[half_sub_data_len:]
+        
+        transformed_sub_test_feature_array = featurize(sub_test_feature_array, classification_task)
+        sub_test_label_array = sub_label_array[half_sub_data_len:]
 
         
+        sub_adapt_feature_array = sub_feature_array[:half_sub_data_len]
+        if adapt_on == 'train_100':
+            transformed_sub_adapt_feature_array = featurize(sub_adapt_feature_array, classification_task)
+            print('adapt on data size: {}'.format(len(transformed_sub_adapt_feature_array)))
+            
+#         elif adapt_on == 'train_50':
+#             transformed_sub_adapt_feature_array = featurize(sub_adapt_feature_array[-int(0.5*half_sub_data_len):], classification_task)
+#             print('adapt on data size: {}'.format(len(transformed_sub_adapt_feature_array)))
+        
+        else:
+            raise NameError('on the predefined gride')
+        
+        start_time = time.time()
+
+        CORAL_group_model_sub_train_feature_array = CoralTransform(transformed_group_model_sub_train_feature_array, transformed_sub_adapt_feature_array)
+        CORAL_group_model_sub_val_feature_array = CoralTransform(transformed_group_model_sub_val_feature_array, transformed_sub_adapt_feature_array)
+        
+        
+        #cross validation
+        Cs = np.logspace(-5, 5, 11)
+                
+        for C in Cs:
+            experiment_name = 'C{}'.format(C)
+            print('experiment_name: {}'.format(experiment_name))
             #derived args
             result_save_subjectdir = os.path.join(result_save_rootdir, test_subject, experiment_name)
             result_save_subject_checkpointdir = os.path.join(result_save_subjectdir, 'checkpoint')
@@ -129,45 +171,45 @@ def train_classifier(args_dict, train_subjects, val_subjects, test_subjects):
             makedir_if_not_exist(result_save_subject_predictionsdir)
             makedir_if_not_exist(result_save_subject_resultanalysisdir)
             makedir_if_not_exist(result_save_subject_trainingcurvedir)
-            
-            test_subjects_dict[test_subject]['result_save_subjectdir'] = result_save_subjectdir
-            test_subjects_dict[test_subject]['result_save_subject_checkpointdir'] = result_save_subject_checkpointdir
-            test_subjects_dict[test_subject]['result_save_subject_predictionsdir'] = result_save_subject_predictionsdir
-            test_subjects_dict[test_subject]['result_save_subject_resultanalysisdir'] = result_save_subject_resultanalysisdir
-            test_subjects_dict[test_subject]['result_save_subject_trainingcurvedir'] = result_save_subject_trainingcurvedir
 
-            test_subjects_dict[test_subject]['result_save_dict'] = dict()
+            result_save_dict = dict()            
             
+            #create Logistic Regression object
+            model = LogisticRegression(C=C, random_state=0, max_iter=10000, solver='lbfgs').fit(CORAL_group_model_sub_train_feature_array, group_model_sub_train_label_array)
 
+            # val performance 
+            val_accuracy = model.score(CORAL_group_model_sub_val_feature_array, group_model_sub_val_label_array) * 100
+                
+            result_save_dict['bestepoch_val_accuracy'] = val_accuracy
+                
+            # test performance
             
-        #create Logistic Regression object
-        model = LogisticRegression(C=C, random_state=0, max_iter=10000, solver='lbfgs').fit(transformed_group_model_sub_train_feature_array, group_model_sub_train_label_array)
-
-        # val performance 
-        val_accuracy = model.score(transformed_group_model_sub_val_feature_array, group_model_sub_val_label_array) * 100
+            inference_start_time = time.time()
+            test_accuracy = model.score(transformed_sub_test_feature_array, sub_test_label_array) * 100
+            test_logits = model.predict_proba(transformed_sub_test_feature_array)
+            inference_end_time = time.time()
+            inference_time = inference_end_time - inference_start_time
             
-        # test performance
-        for test_subject in test_subjects:
-            test_subjects_dict[test_subject]['result_save_dict']['bestepoch_val_accuracy'] = val_accuracy
-            test_accuracy = model.score(test_subjects_dict[test_subject]['transformed_sub_test_feature_array'], test_subjects_dict[test_subject]['sub_test_label_array']) * 100
-            test_logits = model.predict_proba(test_subjects_dict[test_subject]['transformed_sub_test_feature_array'])
             test_class_predictions = test_logits.argmax(1)
 
-            test_subjects_dict[test_subject]['result_save_dict']['bestepoch_test_accuracy'] = test_accuracy
-            test_subjects_dict[test_subject]['result_save_dict']['bestepoch_test_logits'] = test_logits
-            test_subjects_dict[test_subject]['result_save_dict']['bestepoch_test_class_labels'] = test_subjects_dict[test_subject]['sub_test_label_array']
-
-            plot_confusion_matrix(test_class_predictions, test_subjects_dict[test_subject]['sub_test_label_array'], confusion_matrix_figure_labels, test_subjects_dict[test_subject]['result_save_subject_resultanalysisdir'], 'test_confusion_matrix.png')
-            
-            save_pickle(test_subjects_dict[test_subject]['result_save_subject_predictionsdir'], 'result_save_dict.pkl', test_subjects_dict[test_subject]['result_save_dict'])
+            result_save_dict['bestepoch_test_accuracy'] = test_accuracy
+            result_save_dict['bestepoch_test_logits'] = test_logits.copy()
+            result_save_dict['bestepoch_test_class_labels'] = sub_test_label_array.copy()
+                
+            plot_confusion_matrix(test_class_predictions, sub_test_label_array, confusion_matrix_figure_labels, result_save_subject_resultanalysisdir, 'test_confusion_matrix.png')
+                
+            save_pickle(result_save_subject_predictionsdir, 'result_save_dict.pkl', result_save_dict)
             
             #write performance to txt file
-            write_performance_info_FixedTrainValSplit('NA', test_subjects_dict[test_subject]['result_save_subject_resultanalysisdir'], val_accuracy, test_accuracy)
-        
-    end_time = time.time()
-    total_time = end_time - start_time
-    write_program_time(result_save_rootdir, total_time)
+            write_performance_info_FixedTrainValSplit('NA', result_save_subject_resultanalysisdir, val_accuracy, test_accuracy)
     
+        end_time = time.time()
+        total_time = end_time - start_time
+        write_program_time(result_save_rootdir, total_time)
+        write_inference_time(result_save_rootdir, inference_time)
+
+
+
     
 if __name__=='__main__':
     
@@ -177,13 +219,18 @@ if __name__=='__main__':
     seed = args.seed
     data_dir = args.data_dir
     window_size = args.window_size
-    result_save_rootdir = args.result_save_rootdir
     classification_task = args.classification_task
+    result_save_rootdir = args.result_save_rootdir
     setting = args.setting
-
+    adapt_on = args.adapt_on
     
     if setting == '64vs4_TestBucket1':
         test_subjects = [86, 56, 72, 79]
+        train_subjects = [5, 40, 35, 14, 65, 49, 32, 42, 25, 15, 81, 83, 38, 34, 60, 13, 78, 57, 36, 80, 27, 20, 61, 85, 23, 54, 28, 84, 31, 1, 73, 55, 22, 92, 58, 95, 93, 29, 69, 82, 97, 45, 7, 46, 91, 75, 24, 74]
+        val_subjects = [37, 63, 21, 52, 43, 94, 62, 68, 70, 64, 71, 51, 76, 44, 48, 47]
+    
+    if setting == '64vs4_TestBucket1_TimeCalculation':
+        test_subjects = [86]
         train_subjects = [5, 40, 35, 14, 65, 49, 32, 42, 25, 15, 81, 83, 38, 34, 60, 13, 78, 57, 36, 80, 27, 20, 61, 85, 23, 54, 28, 84, 31, 1, 73, 55, 22, 92, 58, 95, 93, 29, 69, 82, 97, 45, 7, 46, 91, 75, 24, 74]
         val_subjects = [37, 63, 21, 52, 43, 94, 62, 68, 70, 64, 71, 51, 76, 44, 48, 47]
         
@@ -439,19 +486,23 @@ if __name__=='__main__':
     else:
         raise NameError('not supported setting')
     
+    
     #sanity check 
-    print('data_dir: {}, type: {}'.format(data_dir, type(data_dir)))
-    print('window_size: {}, type: {}'.format(window_size, type(window_size)))
-    print('result_save_rootdir: {}, type: {}'.format(result_save_rootdir, type(result_save_rootdir)))
-    print('classification_task: {}, type: {}'.format(classification_task, type(classification_task)))
+    print('data_dir: {} type: {}'.format(data_dir, type(data_dir)))
+    print('window_size: {} type: {}'.format(window_size, type(window_size)))
+    print('classification_task: {} type: {}'.format(classification_task, type(classification_task)))
+    print('result_save_rootdir: {} type: {}'.format(result_save_rootdir, type(result_save_rootdir)))
     print('setting: {} type: {}'.format(setting, type(setting)))
+    print('adapt_on: {} type: {}'.format(adapt_on, type(adapt_on)))
 
     
     args_dict = edict()
     args_dict.data_dir = data_dir
     args_dict.window_size = window_size
-    args_dict.result_save_rootdir = result_save_rootdir
     args_dict.classification_task = classification_task
+    args_dict.result_save_rootdir = result_save_rootdir
+#     args_dict.setting = setting #does not need 'setting' inside train_classifier 
+    args_dict.adapt_on = adapt_on
     
     seed_everything(seed)
     train_classifier(args_dict, train_subjects, val_subjects, test_subjects)
