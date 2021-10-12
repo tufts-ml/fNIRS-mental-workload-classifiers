@@ -146,5 +146,4 @@ dependencies:
   - zipp=3.3.1=py_0
   - zlib=1.2.11=h516909a_1010
   - zstd=1.4.9=ha95c52a_0
-prefix: /cluster/tufts/hugheslab/miniconda2/envs/pytorch_a100_clone_Aug16
 
