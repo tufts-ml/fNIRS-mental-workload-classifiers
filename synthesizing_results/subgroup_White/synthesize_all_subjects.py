@@ -6,10 +6,6 @@ import pandas as pd
 
 def main(experiment_dir, summary_save_dir):
     
-    '''
-    experiment_dir: YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/WhiteSubset/RandomForest/binary/21vs6/seed1
-    '''
-    
     AllSubject_summary_filename = os.path.join(summary_save_dir, 'AllSubjects_summary.csv')
     
     with open(AllSubject_summary_filename, mode='w') as csv_file:

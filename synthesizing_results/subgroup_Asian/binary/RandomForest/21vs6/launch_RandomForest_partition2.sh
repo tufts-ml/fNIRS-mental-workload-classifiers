@@ -15,7 +15,7 @@ fi
 
 for SubjectId_of_interest in 22 70 78 28 60 58 80 15 82 29 32 92 54 44 35 73 24 57
 do
-    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/AsianSubset/RandomForest/binary/21vs6/seed3/$SubjectId_of_interest"
+    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/AsianSubset/RandomForest/binary/21vs6/random_partition2/$SubjectId_of_interest"
     
     echo "Current experiment_dir is $experiment_dir"
     
@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/RandomForest/synthesize_hypersearch_RF_for_a_subject.slurm
+        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/subgroup_Asian/binary/RandomForest/synthesize_hypersearch_RF_for_a_subject.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_Asian/binary/RandomForest/synthesize_hypersearch_RF_for_a_subject.slurm
+        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/subgroup_Asian/binary/RandomForest/synthesize_hypersearch_RF_for_a_subject.slurm
     fi
     
 done

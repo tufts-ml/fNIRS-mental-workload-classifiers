@@ -391,4 +391,55 @@ def write_model_info(model_state_dict, result_save_path, file_name):
     auto_file.close()
     
 
+def bootstrapping(candidate_subjects, lookup_table, num_bootstrap_samples=5000, upper_percentile=97.5, lower_percentile=2.5):
+    '''
+    To generate 1 bootstrap sample, first sample the 71 subjects to include for this bootstrap sample.
+    Then for each included subject, sample the chunk to calculate accuracy for this subject
+    '''
+    
+    rng = np.random.RandomState(0)
+    
+    num_candidate_subjects = len(candidate_subjects)
+    
+    bootstrap_accuracy_list = [] # each element is the accuracy of this bootstrap sample (the average accuracy of the selected subjects with their selected chunks in this bootstrap sample)
+    for i in range(num_bootstrap_samples):
+        print('sample: {}'.format(i))
+        #sample the subjects to include for this sample
+        subject_location_ix = np.array(range(num_candidate_subjects))
+        bootstrap_subject_location_ix = rng.choice(subject_location_ix, num_candidate_subjects, replace=True)
+        bootstrap_subjects = candidate_subjects[bootstrap_subject_location_ix]
+#         print('subject to include for this sample: {}'.format(bootstrap_subjects))
+        
+        #for each selected subject, independently resample the chunks to include (as the test set for this subject)
+        subject_accuracies = []
+        for subject_id in bootstrap_subjects:
+            #load the test predictions (for the selected hyper setting) of this subject, and the corresponding true labels
+            ResultSaveDict_this_subject_path = lookup_table.loc[lookup_table['subject_id']==subject_id].experiment_folder.values[0]
+            ResultSaveDict_this_subject = load_pickle(ResultSaveDict_this_subject_path, 'predictions/result_save_dict.pkl')
+
+            TestLogits_this_subject = ResultSaveDict_this_subject['bestepoch_test_logits']
+            TrueLabels_this_subject = ResultSaveDict_this_subject['bestepoch_test_class_labels']
+
+            #bootstrap the chunks to include for this subject (at this bootstrap sample)
+            chunk_location_ix = np.array(range(len(TrueLabels_this_subject)))
+            bootstrap_chunk_location_ix = rng.choice(chunk_location_ix, len(TrueLabels_this_subject), replace=True)
+            bootstrap_chunks_logits = TestLogits_this_subject[bootstrap_chunk_location_ix]
+            bootstrap_chunks_true_labels = TrueLabels_this_subject[bootstrap_chunk_location_ix]
+
+            accuracy_this_subject = (bootstrap_chunks_logits.argmax(1) == bootstrap_chunks_true_labels).mean()*100
+
+            subject_accuracies.append(accuracy_this_subject)
+        
+        
+        average_accuracy_this_bootstrap_sample = np.mean(np.array(subject_accuracies))
+        bootstrap_accuracy_list.append(average_accuracy_this_bootstrap_sample)
+    
+    bootstrap_accuracy_array = np.array(bootstrap_accuracy_list)
+    
+    accuracy_upper_percentile = np.percentile(bootstrap_accuracy_array, upper_percentile)
+    accuracy_lower_percentile = np.percentile(bootstrap_accuracy_array, lower_percentile)
+
+#     return accuracy_upper_percentile, accuracy_lower_percentile, bootstrap_accuracy_df
+    return accuracy_upper_percentile, accuracy_lower_percentile
+
 

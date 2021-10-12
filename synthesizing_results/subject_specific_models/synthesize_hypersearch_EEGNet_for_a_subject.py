@@ -4,9 +4,7 @@ import csv
 import argparse
 
 def extract_experiment_setting(experiment_name):
-    '''
-    extract the hyperparamter for LR: C
-    '''
+    
     print('Passed in experiment_name is {}'.format(experiment_name), flush = True)
     
     hyper_parameter_dict = {}
@@ -29,10 +27,7 @@ def extract_experiment_setting(experiment_name):
     return hyper_parameter_dict
 
 def extract_experiment_performance(experiment_dir, experiment_name):
-    '''
-    experiment_dir: experiments/FixedTrainValSplit_subject_specific_models/LogisticRegression/binary/window_size200/1
-    experiment_name: C0.0001
-    '''
+    
     
     performance_file_fullpath = os.path.join(experiment_dir, experiment_name, 'result_analysis/performance.txt')
     returned_file = None

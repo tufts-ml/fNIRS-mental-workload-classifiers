@@ -6,9 +6,6 @@ import pandas as pd
 
 def main(experiment_dir, summary_save_dir):
     
-    '''
-    experiment_dir: YOUR_PATH/NuripsDataSet2021/experiments/FixedTrainValSplit_generic_models/WhiteSubset/RandomForest/binary/21vs6/seed1
-    '''
     
     AllSubject_summary_filename = os.path.join(summary_save_dir, 'AllSubjects_summary.csv')
     

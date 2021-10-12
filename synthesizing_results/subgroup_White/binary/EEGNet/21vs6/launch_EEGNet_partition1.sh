@@ -15,7 +15,7 @@ fi
 
 for SubjectId_of_interest in 22 70 78 28 60 58 64 69 80 92 97 15 25 7 54 24 37 94 
 do
-    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/WhiteSubset/EEGNet/binary/21vs6/seed2/$SubjectId_of_interest"
+    export experiment_dir="YOUR_PATH/fNIRS-mental-workload-classifiers/experiments/generic_models/WhiteSubset/EEGNet/binary/21vs6/random_partition1/$SubjectId_of_interest"
     
     echo "Current experiment_dir is $experiment_dir"
     
@@ -23,11 +23,11 @@ do
 
     if [[ $ACTION_NAME == 'submit' ]]; then
         ## Use this line to submit the experiment to the batch scheduler
-        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_White/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
+        sbatch < YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/subgroup_White/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
     
     elif [[ $ACTION_NAME == 'run_here' ]]; then
         ## Use this line to just run interactively
-        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/generic_models_White/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
+        bash YOUR_PATH/fNIRS-mental_workload-classifiers/synthesizing_results/subgroup_White/binary/EEGNet/synthesize_hypersearch_EEGNet_for_a_subject.slurm
     fi
     
 done

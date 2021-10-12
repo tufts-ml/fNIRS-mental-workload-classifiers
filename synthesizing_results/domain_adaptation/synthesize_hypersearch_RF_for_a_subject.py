@@ -27,10 +27,6 @@ def extract_experiment_setting(experiment_name):
     return hyper_parameter_dict
 
 def extract_experiment_performance(experiment_dir, experiment_name):
-    '''
-    experiment_dir: experiments/subject_specific_models/RandomForest/binary/window_size200/1
-    experiment_name: MaxFeatures0.166_MinSamplesLeaf16
-    '''
     
     performance_file_fullpath = os.path.join(experiment_dir, experiment_name, 'result_analysis/performance.txt')
     returned_file = None
