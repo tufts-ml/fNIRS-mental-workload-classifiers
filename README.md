@@ -4,7 +4,7 @@ Code for training, evaluating, and visualizing performance of mental workload cl
 # Setup
 ### Download dataset
 Please visit our website https://tufts-hci-lab.github.io/code_and_datasets/fNIRS2MW.html and download the data.
-extract the slide window data into data/slide_window_data folder.
+Extract the slide window data into data/slide_window_data folder.
 
 ### Install Anaconda
 Follow the instructions here: https://conda.io/projects/conda/en/latest/user-guide/install/index.html
