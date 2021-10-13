@@ -10,7 +10,8 @@ import argparse
 from easydict import EasyDict as edict
 from tqdm import trange
 
-sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers/')
+YOUR_PATH = os.environ['YOUR_PATH']
+sys.path.insert(0, os.path.join(YOUR_PATH, 'fNIRS-mental-workload-classifiers/helpers'))
 import models
 import brain_data
 from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit, write_program_time

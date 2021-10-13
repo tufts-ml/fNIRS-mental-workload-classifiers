@@ -9,10 +9,11 @@ import argparse
 from easydict import EasyDict as edict
 from tqdm import trange
 
-sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers/')
+YOUR_PATH = os.environ['YOUR_PATH']
+sys.path.insert(0, os.path.join(YOUR_PATH, 'fNIRS-mental-workload-classifiers/helpers'))
 import models
 import brain_data
-from utils import seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit
+from utils import generic_GetTrainValTestSubjects, seed_everything, makedir_if_not_exist, plot_confusion_matrix, save_pickle, train_one_epoch, eval_model, save_training_curves_FixedTrainValSplit, write_performance_info_FixedTrainValSplit
 
 # from sklearn.model_selection import KFold
 
@@ -229,161 +230,7 @@ if __name__=='__main__':
     n_epoch = args.n_epoch
     setting = args.setting
 
-    if setting == '64vs4_TestBucket1':
-        test_subjects = [86, 56, 72, 79]
-        
-    elif setting == '64vs4_TestBucket2':
-        test_subjects = [93, 82, 55, 48]
-        
-    elif setting == '64vs4_TestBucket3':
-        test_subjects = [80, 14, 58, 75]
-        
-    elif setting == '64vs4_TestBucket4':
-        test_subjects = [62, 47, 52, 84]
-        
-    elif setting == '64vs4_TestBucket5':
-        test_subjects = [73, 69, 42, 63]
-        
-    elif setting == '64vs4_TestBucket6':
-        test_subjects = [81, 15, 57, 70]
-        
-    elif setting == '64vs4_TestBucket7':
-        test_subjects = [27, 92, 38, 76]
-        
-    elif setting == '64vs4_TestBucket8':
-        test_subjects = [45, 24, 36, 71]
-        
-    elif setting == '64vs4_TestBucket9':
-        test_subjects = [91, 85, 61, 83]
-        
-    elif setting == '64vs4_TestBucket10':
-        test_subjects = [94, 31, 43, 54]
-        
-    elif setting == '64vs4_TestBucket11':
-        test_subjects = [51, 64, 68, 44]
-       
-    elif setting == '64vs4_TestBucket12':
-        test_subjects = [20, 32, 5, 49]
-        
-    elif setting == '64vs4_TestBucket13':
-        test_subjects = [65, 28, 78, 37]
-        
-    elif setting == '64vs4_TestBucket14':
-        test_subjects = [97, 40, 74, 46]
-        
-    elif setting == '64vs4_TestBucket15':
-        test_subjects = [22, 7, 23, 95]
-        
-    elif setting == '64vs4_TestBucket16':
-        test_subjects = [13, 35, 1, 34]
-        
-    elif setting == '64vs4_TestBucket17':
-        test_subjects = [21, 25, 29, 60]
-        
-    elif setting == '16vs4_TestBucket1':
-        test_subjects = [86, 56, 72, 79]
-        
-    elif setting == '16vs4_TestBucket2':
-        test_subjects = [93, 82, 55, 48]
-        
-    elif setting == '16vs4_TestBucket3':
-        test_subjects = [80, 14, 58, 75]
-        
-    elif setting == '16vs4_TestBucket4':
-        test_subjects = [62, 47, 52, 84]
-        
-    elif setting == '16vs4_TestBucket5':
-        test_subjects = [73, 69, 42, 63]
-        
-    elif setting == '16vs4_TestBucket6':
-        test_subjects = [81, 15, 57, 70]
-        
-    elif setting == '16vs4_TestBucket7':
-        test_subjects = [27, 92, 38, 76]
-        
-    elif setting == '16vs4_TestBucket8':
-        test_subjects = [45, 24, 36, 71]
-        
-    elif setting == '16vs4_TestBucket9':
-        test_subjects = [91, 85, 61, 83]
-        
-    elif setting == '16vs4_TestBucket10':
-        test_subjects = [94, 31, 43, 54]
-        
-    elif setting == '16vs4_TestBucket11':
-        test_subjects = [51, 64, 68, 44]
-        
-    elif setting == '16vs4_TestBucket12':
-        test_subjects = [20, 32, 5, 49]
-        
-    elif setting == '16vs4_TestBucket13':
-        test_subjects = [65, 28, 78, 37]
-        
-    elif setting == '16vs4_TestBucket14':
-        test_subjects = [97, 40, 74, 46]
-        
-    elif setting == '16vs4_TestBucket15':
-        test_subjects = [22, 7, 23, 95]
-        
-    elif setting == '16vs4_TestBucket16':
-        test_subjects = [13, 35, 1, 34]
-        
-    elif setting == '16vs4_TestBucket17':
-        test_subjects = [21, 25, 29, 60]
-        
-    elif setting == '4vs4_TestBucket1':
-        test_subjects = [86, 56, 72, 79]
-        
-    elif setting == '4vs4_TestBucket2':
-        test_subjects = [93, 82, 55, 48]
-        
-    elif setting == '4vs4_TestBucket3':
-        test_subjects = [80, 14, 58, 75]
-       
-    elif setting == '4vs4_TestBucket4':
-        test_subjects = [62, 47, 52, 84]
-    
-    elif setting == '4vs4_TestBucket5':
-        test_subjects = [73, 69, 42, 63]
-    
-    elif setting == '4vs4_TestBucket6':
-        test_subjects = [81, 15, 57, 70]
-        
-    elif setting == '4vs4_TestBucket7':
-        test_subjects = [27, 92, 38, 76]
-        
-    elif setting == '4vs4_TestBucket8':
-        test_subjects = [45, 24, 36, 71]
-        
-    elif setting == '4vs4_TestBucket9':
-        test_subjects = [91, 85, 61, 83]
-        
-    elif setting == '4vs4_TestBucket10':
-        test_subjects = [94, 31, 43, 54]
-    
-    elif setting == '4vs4_TestBucket11':
-        test_subjects = [51, 64, 68, 44]
-        
-    elif setting == '4vs4_TestBucket12':
-        test_subjects = [20, 32, 5, 49]
-        
-    elif setting == '4vs4_TestBucket13':
-        test_subjects = [65, 28, 78, 37]
-    
-    elif setting == '4vs4_TestBucket14':
-        test_subjects = [97, 40, 74, 46]
-        
-    elif setting == '4vs4_TestBucket15':
-        test_subjects = [22, 7, 23, 95]
-        
-    elif setting == '4vs4_TestBucket16':
-        test_subjects = [13, 35, 1, 34]
-        
-    elif setting == '4vs4_TestBucket17':
-        test_subjects = [21, 25, 29, 60]
-        
-    else:
-        raise NameError('not supported setting')
+    test_subjects, _, _ = generic_GetTrainValTestSubjects(setting)
     
     #sanity check:
     print('data_dir: {}, type: {}'.format(data_dir, type(data_dir)))

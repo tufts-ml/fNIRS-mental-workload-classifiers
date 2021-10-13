@@ -8,10 +8,11 @@ from tqdm import trange
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier as rfc
 
-sys.path.insert(0, 'YOUR_PATH/fNIRS-mental-workload-classifiers/helpers/')
+YOUR_PATH = os.environ['YOUR_PATH']
+sys.path.insert(0, os.path.join(YOUR_PATH, 'fNIRS-mental-workload-classifiers/helpers'))
 import models
 import brain_data
-from utils import seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit
+from utils import SubgroupAnalysisAsian_GetTrainValTestSubjects, seed_everything, featurize, makedir_if_not_exist, plot_confusion_matrix, save_pickle, write_performance_info_FixedTrainValSplit
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', default=0, type=int, help='random seed')
@@ -178,39 +179,8 @@ if __name__=='__main__':
     result_save_rootdir = args.result_save_rootdir
     classification_task = args.classification_task
     setting = args.setting
-        
-    if setting == 'random_partition1':
-        train_subjects = [72, 68, 27, 75, 52, 46, 65, 71, 73, 63, 74, 44, 81, 13, 54, 84, 55, 37, 51, 7]
-        val_subjects = [56, 57, 24, 43, 25, 61]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [85, 38, 42, 29, 48, 40]
-        test_subjects_ASIAN = [5, 76, 93, 49, 94, 35]
     
-    elif setting == 'random_partition2':
-        train_subjects = [27, 84, 7, 49, 68, 37, 76, 71, 72, 56, 5, 93, 55, 52, 94, 46, 61, 81, 74, 43]
-        val_subjects = [65, 25, 51, 13, 63, 75]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [80, 15, 82, 29, 32, 92]
-        test_subjects_ASIAN = [54, 44, 35, 73, 24, 57]
-
-    elif setting == 'random_partition3':
-        train_subjects = [55, 25, 71, 24, 68, 49, 46, 13, 44, 5, 65, 54, 84, 61, 63, 7, 27, 74, 43, 73]
-        val_subjects = [72, 76, 51, 57, 75, 81]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [79, 95, 31, 32, 92, 34]
-        test_subjects_ASIAN = [94, 56, 93, 35, 37, 52]
-    
-    elif setting == 'random_partition4':
-        train_subjects = [25, 63, 56, 74, 72, 76, 7, 24, 46, 43, 5, 13, 71, 44, 51, 52, 27, 94, 55, 81]
-        val_subjects = [57, 37, 68, 75, 54, 65]
-        test_subjects_URG = [22, 70, 78, 28, 60, 58]
-        test_subjects_WHITE = [42, 32, 14, 95, 92, 97]
-        test_subjects_ASIAN = [61, 84, 73, 93, 49, 35]
-    
-    else:
-        raise NameError('not supported setting')
-    
-    
+    train_subjects, val_subjects, test_subjects_URG, test_subjects_WHITE, test_subjects_ASIAN = SubgroupAnalysisAsian_GetTrainValTestSubjects(setting)
     
     #sanity check 
     print('data_dir: {}, type: {}'.format(data_dir, type(data_dir)))
