@@ -14,10 +14,6 @@ conda env create -f environment.yml
 
 # Running experiments
 
-### Define the environment variable
-```export YOUR_PATH="paths to this repo" ```
-(e.g., '/home/usr/fNIRS-mental-workload-classifiers', then YOUR_PATH = '/home/usr')
-
 Code for runing each experiment in the paper are located in their own folders:
 
 [SelectWindowSize](SelectWindowSize/): optimal window size experiments using Random Forest and Logistic Regression
@@ -33,6 +29,11 @@ Code for runing each experiment in the paper are located in their own folders:
 [subgroup_analysis](subgroup_analysis/): training a generic model solely from subjects of one subgroup's, and see how the performance generalize to othe subgroups with the selected window size of 30sec. Two scenario are experimented (training on White and training on Asian) (since these are the two majority groups in our dataset) 
 
 The commands for reproducing results in the paper are provided in [runs](runs/) subfolders inside each experiment folders.
+
+### Define the environment variable
+```export YOUR_PATH="paths to this repo" ```
+(e.g., '/home/usr/fNIRS-mental-workload-classifiers', then YOUR_PATH = '/home/usr')
+
 
 ### Demo
 For example, if you want to train subject-specific DeepConvNet. Go to [runs](subject_specific_models/runs/window_size150) within the subject_sepcific_models folder
