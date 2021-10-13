@@ -13,6 +13,11 @@ Follow the instructions here: https://conda.io/projects/conda/en/latest/user-gui
 conda env create -f environment.yml
 
 # Running experiments
+
+### Define the environment variable
+export YOUR_PATH="paths to this repo"
+(e.g., '/home/usr/fNIRS-mental-workload-classifiers', then YOUR_PATH = '/home/usr')
+
 Code for runing each experiment in the paper are located in their own folders:
 
 [SelectWindowSize](SelectWindowSize/): optimal window size experiments using Random Forest and Logistic Regression
