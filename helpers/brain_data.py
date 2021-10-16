@@ -27,7 +27,7 @@ class brain_dataset(Dataset):
 
 
 def read_subject_csv_binary(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O', 'AB_I_DO', 'AB_PHI_DO', 'CD_I_O', 'CD_PHI_O',
-       'CD_I_DO', 'CD_PHI_DO'], num_chunk_this_window_size = 2224):
+       'CD_I_DO', 'CD_PHI_DO'], num_chunk_this_window_size = 2224, verbose=False):
     
     '''
     For binary classification: 0 vs 2
@@ -44,16 +44,19 @@ def read_subject_csv_binary(path, select_feature_columns = ['AB_I_O', 'AB_PHI_O'
 
     #chunk id: 0 to 2223 (for window size 10 stride 3)
     for i in range(0, num_chunk_this_window_size):
-        print('current chunk: {}'.format(i))
+        if verbose:
+            print('current chunk: {}'.format(i))
         chunk_matrix = subject_df.iloc[:,:-2].loc[subject_df['chunk'] == i].values
         label_for_this_segment = subject_df[subject_df['chunk'] == i].label.values[0]
         
         if label_for_this_segment == 0:
-            print('label_for_this_segment is {}'.format(label_for_this_segment), flush = True)
+            if verbose:
+                print('label_for_this_segment is {}'.format(label_for_this_segment), flush = True)
             instance_list.append(chunk_matrix)        
             instance_label.append(label_for_this_segment)
         elif label_for_this_segment == 2:
-            print('label_for_this_segment is {}, map to class1'.format(label_for_this_segment), flush = True)
+            if verbose:
+                print('label_for_this_segment is {}, map to class1'.format(label_for_this_segment), flush = True)
             instance_list.append(chunk_matrix)        
             instance_label.append(int(1))
 
