@@ -1,9 +1,9 @@
 # fNIRS-mental-workload-classifiers
 Code for training, evaluating, and visualizing performance of mental workload classification using fNIRS BCI sensors
 
-# For users who want to directly try our data on their own pipeline, we provide a simple demo of how to load the data and convert it to standard pytorch dataloader. Please see [DataLoader_Demo.ipynb](DataLoader_Demo.ipynb).
+## For users who want to directly try our data on their own pipeline, we provide a simple demo of how to load the data and convert it to standard pytorch dataloader. Please see [DataLoader_Demo.ipynb](DataLoader_Demo.ipynb).
 
-# To run experiments in our paper, please follow the following setups
+## To run experiments in our paper, please follow the following setups
 ### Download dataset
 Please visit our website https://tufts-hci-lab.github.io/code_and_datasets/fNIRS2MW.html and download the data.
 Extract the slide window data into data/slide_window_data folder.
@@ -14,7 +14,7 @@ Follow the instructions here: https://conda.io/projects/conda/en/latest/user-gui
 ### Create environment
 conda env create -f environment.yml
 
-# Running experiments
+## Running experiments
 
 Code for runing each experiment in the paper are located in their own folders:
 
@@ -46,7 +46,7 @@ bash launch_DeepConvNet_150ts.sh run_here
 ```
 
 
-# Analysing results
+## Analysing results
 
 training curves, confusion matrix, checkpoints etc will be automatically saved in the specified directory in the after running the training commands.  
 
