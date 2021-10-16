@@ -1,7 +1,9 @@
 # fNIRS-mental-workload-classifiers
 Code for training, evaluating, and visualizing performance of mental workload classification using fNIRS BCI sensors
 
-# Setup
+# For users who want to directly try our data on their own pipeline, we provide a simple demo of how to load the data and convert it to standard pytorch dataloader. Please see [DataLoader_Demo.ipynb](DataLoader_Demo.ipynb).
+
+# To run experiments in our paper, please follow the following setups
 ### Download dataset
 Please visit our website https://tufts-hci-lab.github.io/code_and_datasets/fNIRS2MW.html and download the data.
 Extract the slide window data into data/slide_window_data folder.
